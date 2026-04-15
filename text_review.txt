@@ -1,0 +1,76 @@
+App.tsx
+- Main Page
+- Developer Portal
+- AI is Crafting...
+- Extracting subjects and blending lighting for a perfect scene.
+- AI Photo Booth
+- Upload a photo of people, choose a background, and place them anywhere in the scene.
+- Creation Complete
+- Download
+- New Session
+- Select Background
+- Set Position
+- Generate Image
+- Upload
+- Position
+- Generate
+
+UploadSection.tsx
+- Terms and Conditions for using HKBU 70th Anniversary AI Photo Booth
+- Please read and accept the Terms and Conditions for using the HKBU 70th Anniversary AI Photo Booth:
+- You consent to uploading photos containing human subjects for AI processing.
+- The AI will automatically remove the background and any existing watermarks from your uploaded photo.
+- Your images are processed in real-time and are not stored permanently by this platform after your session ends.
+- A transparent watermark will be added to the final generated image.
+- You confirm that you have the right to use and process the images you upload.
+- You must accept the terms to use the AI Photobooth
+- Accept and Proceed
+- Decline
+- Photo Verified
+- Retry
+- Continue
+- Validating...
+- Upload Your Photo
+- Drag and drop or click to browse
+- Select Image
+- Please upload a valid image file.
+- We cannot detect any people in this photo.
+- There is an error verifying your photo.
+
+BackgroundSelector.tsx
+- Festive Celebration
+- AAB building
+- Library
+- A vibrant, festive background with colorful streamers and celebratory elements.
+- The iconic Academic and Administration Building, a centerpiece of the HKBU campus.
+- The modern university library, providing a focused environment for learning.
+
+InteractiveCanvas.tsx
+- Click where people should stand
+- The AI will blend lighting and perspective based on this location.
+
+DeveloperPortal.tsx
+- Developer Access
+- Enter the secure passcode to manage the platform.
+- Enter Passcode
+- Unlock
+- Back
+- Back to App
+- Developer Dashboard
+- HKBU 70th Anniversary Admin Console
+- Add New Scene
+- Scene Name
+- Scene Image (4:3 Recommended)
+- Save to Booth
+- Active Scenes
+- Invalid passcode. Access denied.
+- Background saved!
+- Please upload an image file.
+- Processing...
+- Upload Image
+- Click to change
+- Active
+
+ConfirmationModal.tsx
+- Confirm
+- Cancel

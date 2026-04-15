@@ -1,0 +1,5 @@
+{
+  "name": "20260416_v4_HKBU 70th Anniversary Photo Generator",
+  "description": "Upload a photo of people, choose a background, and place them exactly where you want using Gemini AI.",
+  "requestFramePermissions": []
+}
