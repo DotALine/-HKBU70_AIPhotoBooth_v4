@@ -30,6 +30,50 @@ export const resizeImage = (base64Str: string, maxWidth: number = 1024, maxHeigh
   });
 };
 
+export const fetchWithResilientProxy = async (url: string): Promise<string> => {
+  const proxies = [
+    (u: string) => `https://images.weserv.nl/?url=${encodeURIComponent(u.replace(/^https?:\/\//, ''))}`,
+    (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    (u: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    (u: string) => `https://thingproxy.freeboard.io/fetch/${u}`
+  ];
+
+  console.log(`Starting resilient fetch for: ${url}`);
+
+  for (const proxyFn of proxies) {
+    const proxyUrl = proxyFn(url);
+    try {
+      console.log(`Trying proxy: ${proxyUrl}`);
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        console.warn(`Proxy returned status ${response.status}: ${proxyUrl}`);
+        continue;
+      }
+      const blob = await response.blob();
+      
+      // Basic check to ensure we got an image
+      if (blob.size < 100) {
+        console.warn(`Proxy returned empty or too small blob (${blob.size} bytes): ${proxyUrl}`);
+        continue; 
+      }
+
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          console.log(`Successfully fetched and converted image via: ${proxyUrl}`);
+          resolve(reader.result as string);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (e) {
+      console.warn(`Proxy fetch failed: ${proxyUrl}`, e);
+    }
+  }
+  throw new Error("All proxies failed to fetch image. Please check your internet connection or try a different background.");
+};
+
 /* Adds a watermark image to a base64 image string.
  * Places the watermark at the bottom‑right corner with optional transparency and shadow.
  */
@@ -66,37 +110,6 @@ export const addWatermarkToImage = (base64Str: string, watermarkUrl: string): Pr
         });
       };
 
-      const fetchWithResilientProxy = async (url: string): Promise<string> => {
-        const proxies = [
-          (u: string) => `https://images.weserv.nl/?url=${encodeURIComponent(u.replace(/^https?:\/\//, ''))}`,
-          (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-          (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-          (u: string) => `https://thingproxy.freeboard.io/fetch/${u}`
-        ];
-
-        for (const proxyFn of proxies) {
-          try {
-            const proxyUrl = proxyFn(url);
-            const response = await fetch(proxyUrl);
-            if (!response.ok) continue;
-            const blob = await response.blob();
-            
-            // Basic check to ensure we got an image
-            if (blob.size < 100) continue; 
-
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            });
-          } catch (e) {
-            console.warn(`Proxy failed: ${proxyFn(url)}`, e);
-          }
-        }
-        throw new Error("All proxies failed to fetch watermark");
-      };
-
       try {
         let watermarkImg: HTMLImageElement;
         try {
@@ -104,8 +117,8 @@ export const addWatermarkToImage = (base64Str: string, watermarkUrl: string): Pr
           watermarkImg = await loadWatermarkImage(watermarkUrl);
         } catch (e) {
           console.warn("Direct watermark load failed, trying resilient proxies...");
-          const blobUrl = await fetchWithResilientProxy(watermarkUrl);
-          watermarkImg = await loadWatermarkImage(blobUrl);
+          const base64Data = await fetchWithResilientProxy(watermarkUrl);
+          watermarkImg = await loadWatermarkImage(base64Data);
         }
 
         // 2. Calculate dimensions and position

@@ -68,7 +68,7 @@ export const BackgroundSelector: React.FC<BackgroundSelectorProps> = ({
             }`}
           >
           <img 
-            src={scene.url} 
+            src={`https://images.weserv.nl/?url=${encodeURIComponent(scene.url.replace(/^https?:\/\//, ''))}&w=400&h=300&fit=cover`} 
             alt={scene.name} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             onError={(e) => {

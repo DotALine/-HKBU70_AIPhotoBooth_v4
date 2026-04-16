@@ -83,11 +83,16 @@ export const generateCompositeScene = async (
             },
           },
           {
-            text: `MISSION: You are a master photo editor. Integrate the subjects from Image 1 into the historical environment of Image 2. Your goal is a "Single-Layer" look: the subjects must look like they were captured on the same physical piece of film as the background.
-            1. Keyout the human figure from uploaded image (Image 1).
-            2. Place the human figure onto the background image (Image 2), alter the posture, color, position, and size of the human figure according to the perspective, color temperature, and noise of the background image; keeping the face, hairstyle, and clothing the same as uploaded image.
-            3. CRITICAL: Do not alter anything of the background image (Image 2). The background must remain 100% identical to the original. Do not add, remove, or modify any pixels of the background.
-            4. If the human figure uploaded is half-body, make it stick to the bottom of the picture, making it look like they are taking a half-body picture.`,
+            text: `IMAGE 2 IS THE STATIC BACKGROUND. DO NOT GENERATE A NEW SCENE.
+            1. Extract the subjects from Image 1.
+            2. Overlay them onto the EXACT pixels of Image 2.
+            3. Do not re-imagine or alter any part of Image 2.
+            4. Only adjust the subjects' lighting and color to match Image 2.
+            5. The output must be Image 2 with the subjects from Image 1 added to it.
+            
+            ${customPrompt ? `BACKGROUND-SPECIFIC INSTRUCTIONS: ${customPrompt}` : ''}
+            ${coord ? `SPATIAL ANCHORING: Place the subjects' feet exactly at X=${coord.pixelX}, Y=${coord.pixelY}.` : ''}
+            If the human figure uploaded is half-body, make it stick to the bottom of the picture, making it look like they are taking a half-body picture.`,
           },
         ],
       },
